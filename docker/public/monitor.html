@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <link href="video-js.css" rel="stylesheet" />
+<style type="text/css">
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+</style>
+  </head>
+
+  <body>
+    <video
+      id="video"
+      class="video-js vjs-fluid"
+      controls
+      preload="auto"
+      width="1920"
+      height="1080"
+      data-setup="{}"
+    >
+      <source src="monitor.m3u8" type="application/x-mpegURL" />
+    </video>
+
+    <script src="video.min.js"></script>
+    <script>
+      var player = videojs('video');
+      player.on('ready', () => {
+        player.tech().on('usage', (e) => {
+          console.log(e);
+        });
+      });
+    </script>
+  </body>
+</html>

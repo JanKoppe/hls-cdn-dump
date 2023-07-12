@@ -1,0 +1,14 @@
+values = split!(.message, "|")
+. = {}
+.cache_status = values[0]
+.status_code = to_int!(values[1])
+.request_timestamp = to_int!(values[2])
+.bytes_sent = to_int!(values[3])
+.pull_zone_id = to_int!(values[4])
+.remote_ip = values[5]
+.referer_url = values[6]
+.url = values[7]
+.edge_location_code = values[8]
+.user_agent = values[9]
+.unique_request_id = values[10]
+.country_code = values[11]

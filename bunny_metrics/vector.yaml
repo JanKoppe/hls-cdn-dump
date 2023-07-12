@@ -1,0 +1,44 @@
+sources:
+  bunny_raw:
+    type: syslog
+    address: 0.0.0.0:28667
+    mode: tcp
+transforms:
+  bunny:
+    type: remap
+    inputs:
+      - bunny_raw
+    file: /etc/vector/bunny.vrl
+  bunny_bytes_sent:
+    type: log_to_metric
+    inputs:
+      - bunny
+    metrics:
+      - type: counter
+        field: bytes_sent
+        name: bunny_bytes_sent
+        increment_by_value: true
+        tags:
+          cache_status: "{{cache_status}}"
+          pull_zone_id: "{{pull_zone_id}}"
+          status_code: "{{status_code}}"
+  bunny_response_total:
+    type: log_to_metric
+    inputs:
+      - bunny
+    metrics:
+      - type: counter
+        field: status_code
+        name: bunny_response_total
+        tags:
+          cache_status: "{{cache_status}}"
+          pull_zone_id: "{{pull_zone_id}}"
+          status_code: "{{status_code}}"
+sinks:
+  bunny_metrics:
+    type: prometheus_exporter
+    inputs:
+      - bunny_bytes_sent
+      - bunny_response_total
+    address: 0.0.0.0:28668
+    default_namespace: vector

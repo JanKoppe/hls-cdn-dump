@@ -1,0 +1,28 @@
+{
+    log default {
+        output stdout
+        format json {
+            time_format rfc3339
+        }
+    }
+}
+
+http:// {
+    root * /tmp/data/public
+    file_server {
+        browse
+    }
+
+    uri strip_prefix {$CADDY_STRIP_PREFIX:/}
+
+    header -Server
+
+    @ts path *.ts
+    @m3u8 path *.m3u8
+    @jpg path /*.jpg
+
+   	header @ts Cache-Control max-age=300
+   	header @m3u8 Cache-Control max-age=0
+   	header @jpg Cache-Control max-age=5
+    header Cache-Control max-age=60
+}

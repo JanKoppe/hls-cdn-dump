@@ -1,0 +1,52 @@
+sources:
+  supervisord_logs:
+    type: file
+    include:
+      - /var/log/supervisord.log
+  aes_key_rotator_logs:
+    type: file
+    include:
+      - /var/log/aes_key_rotator.stderr
+      - /var/log/aes_key_rotator.stdout
+  caddy_logs:
+    type: file
+    include:
+      - /var/log/caddy.stderr
+      - /var/log/caddy.stdout
+  ffmpeg_logs:
+    type: file
+    include:
+      - /var/log/ffmpeg_hls.stderr
+      - /var/log/ffmpeg_hls.stdout
+  ffmpeg_monitor_logs:
+    type: file
+    include:
+      - /var/log/ffmpeg_hls_monitor.stderr
+      - /var/log/ffmpeg_hls_monitor.stdout
+  ffmpeg_progress:
+    type: file
+    include:
+      - /tmp/data/ffmpeg_progress
+sinks:
+  console:
+    type: console
+    inputs:
+      - "*"
+    encoding:
+      codec: json
+      timestamp_format: rfc3339
+  s3:
+    type: aws_s3
+    inputs:
+      - "*"
+    bucket: ${S3_BUCKET:-hls-origin-logs}
+    region: ${S3_REGION:-us-east-1}
+    endpoint: ${S3_ENDPOINT}
+    key_prefix: "${S3_PREFIX:-$HOSTNAME}/"
+    compression: none
+    healthcheck:
+      enabled: false
+    encoding:
+      codec: json
+      timestamp_format: rfc3339
+
